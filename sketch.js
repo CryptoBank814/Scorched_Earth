@@ -34,10 +34,15 @@ let bground; // background sprite
 function preload() {
   // Load necessary images
 
-  areaImage = loadImage('images/area.png');   // terrain
-  tankImage1 = loadImage('images/red.png');   // red   tank (A)
-  tankImage2 = loadImage('images/green.png'); // green tank (B)
-  bgImage = loadImage('images/background.png'); // background (sky)
+  // areaImage = loadImage('images/area.png');   // terrain
+  // tankImage1 = loadImage('images/red.png');   // red   tank (A)
+  // tankImage2 = loadImage('images/green.png'); // green tank (B)
+  // bgImage = loadImage('images/background.png'); // background (sky)
+
+  areaImage = loadImage('http://95.217.51.146:5000/area.png');   // terrain
+  tankImage1 = loadImage('http://95.217.51.146:5000/red.png');   // red   tank (A)
+  tankImage2 = loadImage('http://95.217.51.146:5000/green.png'); // green tank (B)
+  bgImage = loadImage('http://95.217.51.146:5000/background.png'); // background (sky)
 }
 
 function setup() {
@@ -84,11 +89,11 @@ function setup() {
   // create sticks
   stick1 = createSprite(0, 0, 12, 2, 'n')
   stick1.fill = 'red';
-  stick1.color = 'red';
+  stick1.stroke = 'red';
   stick1.offset.x = 6;
   stick2 = createSprite(0, 0, 12, 2, 'n')
   stick2.fill = 'green';
-  stick2.color = 'green';
+  stick2.stroke = 'green';
   stick2.offset.x = 6;
 
   // set background
@@ -225,8 +230,9 @@ function draw() {
       bomb = new Sprite(
         tank1.position.x + x,
         tank1.position.y + y - 6,
-        5, 5);
-      bomb.color = 'red';
+        3, 3);
+      bomb.fill = 'rgb(30, 30, 30)';
+      bomb.stroke = 'rgb(30, 30, 30)';
       bomb.friction = 1;
       bomb.rotation = angle1;
       bomb.speed = power1 / 4;
@@ -237,8 +243,9 @@ function draw() {
       bomb = new Sprite(
         tank2.position.x + x,
         tank2.position.y + y - 6,
-        5, 5);
-      bomb.color = 'red';
+        3, 3);
+      bomb.fill = 'rgb(30, 30, 30)';
+      bomb.stroke = 'rgb(30, 30, 30)';
       bomb.friction = 1;
       bomb.rotation = angle2;
       bomb.speed = power2 / 4;
@@ -253,7 +260,8 @@ function draw() {
       console.log('crashed')
 
       explode = new Sprite(tank2.position.x, tank2.position.y, 4, 'n');
-      explode.fill = 'green';
+      explode.fill = 'rgb(200, 30, 30)';
+      explode.stroke = 'rgb(200, 30, 30)';
       box.text = 'win: Player 1';
 
       bomb.remove();
@@ -264,7 +272,8 @@ function draw() {
       console.log('crashed')
 
       explode = new Sprite(tank1.position.x, tank1.position.y, 4, 'n');
-      explode.fill = 'green';
+      explode.fill = 'rgb(200, 30, 30)';
+      explode.stroke = 'rgb(200, 30, 30)';
       box.text = 'win: Player 2';
 
       bomb.remove();
@@ -279,7 +288,8 @@ function draw() {
       turn = 1 - turn;
 
       explode = new Sprite(bomb.position.x, bomb.position.y, 4, 'n');
-      explode.fill = 'green';
+      explode.fill = 'rgb(200, 30, 30)';
+      explode.stroke = 'rgb(200, 30, 30)';
       bomb.remove();
       bomb = null;
     }
@@ -326,7 +336,7 @@ function createArea() {
   sp.push([0, 400])
   area = new Sprite(sp, 's')
   area.fill = 'rgb(180, 97, 0)';
-  area.color = 'rgb(180, 97, 0)';
+  area.stroke = 'rgb(180, 97, 0)';
 
   if (areaBg != null) {
     areaBg.remove();
