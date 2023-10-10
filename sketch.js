@@ -1,39 +1,43 @@
-let areaImage; // Area
+let areaImage; // Area: Terrain Image
 let tankImage1; // Red Tank
 let tankImage2; // Green Tank
+let bgImage; // Background
 
 // area
-let board = [];
-let area;
-let areaBg;
+let board = []; // It's used for creating Polygon area.
+let area; // border of area
+let areaBg; // terrian
 
 // players
 let turn = 0; // Player turn(0/1)
-let power1 = 10;
-let power2 = 10;
-let angle1 = 315;
-let angle2 = 225;
-const MAX_POWER = 100;
-let explodeRadius = 30;
-let prevPos;
+let power1 = 10; // Initial power
+let power2 = 10; // Initial power
+let angle1 = 315; // Initial angle
+let angle2 = 225; // Initial angle
+const MAX_POWER = 100; // Max POWER
+let explodeRadius = 30; // explosion range
+let prevPos; // temporary
 
 // control
 let fire = false; // SPACE key
-let bomb = null;
+let bomb = null; // Bomb
 
 // time
 let start, end; // TIME
 
 // Srpites
-let tank1, tank2;
+let tank1, tank2; // TANK A, B
 let stick1, stick2;
-let join1, join2;
-let explode = null;
+let explode = null; // Explosion sprite
+let bground; // background sprite
 
 function preload() {
-  areaImage = loadImage('images/area.png'); // grass
-  tankImage1 = loadImage('images/red.png'); // grass
-  tankImage2 = loadImage('images/green.png'); // grass
+  // Load necessary images
+
+  areaImage = loadImage('images/area.png');   // terrain
+  tankImage1 = loadImage('images/red.png');   // red   tank (A)
+  tankImage2 = loadImage('images/green.png'); // green tank (B)
+  bgImage = loadImage('images/background.png'); // background (sky)
 }
 
 function setup() {
@@ -45,8 +49,11 @@ function setup() {
   // reset image size
   areaImage.resize(600, 400);
 
-  // load image
-  // create a box (outline)
+  /////////////////
+  // Load Images //
+  /////////////////
+
+  // create a box (outline) - RECT
   box = new Sprite(300, 200, 600, 400, 's');
   box.shape = 'chain';
   box.textSize = 40;
@@ -61,6 +68,7 @@ function setup() {
   tank2 = createSprite(12, 3, 24, 6);
   tank2.addImage(tankImage2);
 
+  // tank - configuration
   tank1.friction = 1;
   tank1.bounciness = 0;
   tank1.strokeWeight = 0;
@@ -83,13 +91,21 @@ function setup() {
   stick2.color = 'green';
   stick2.offset.x = 6;
 
+  // set background
+  bground = createSprite(300, 200, 600, 400, 'n');
+  bground.addImage(bgImage);
+  bground.layer = 0;
+
   createArea();
 }
 
 function draw() {
+
   background(10, 20, 20, 255);
 
   if (explode != null) {
+
+    // Draw Explosion
 
     explode.diameter += 2;
 
@@ -112,6 +128,8 @@ function draw() {
   }
 
   // Key Down
+
+  // Movement
   if (kb.pressing('D')) {
     if (turn == 0) {
       prevPos = tank1.position;
@@ -134,6 +152,8 @@ function draw() {
       tank2.vel.y = 10;//0.1;
     }
   }
+
+  // Tank Configuration
   if (kb.presses(LEFT_ARROW)) {
     start = Date.now()
     turn == 0 ? angle1-- : angle2--;
@@ -151,6 +171,8 @@ function draw() {
     turn == 0 ? power1-- : power2--;
   }
 
+  // If user presses the arrow key for a long time, 
+  // accelerates the speed of power and angle
   if (Date.now() - start > 500) {
     amount = 1;
     if (Date.now() - start > 2500) { amount = 10; }
@@ -170,7 +192,7 @@ function draw() {
     }
   }
 
-  // limit
+  // limit of power & angle
   if (angle1 < 180) angle1 = 180;
   if (angle2 < 180) angle2 = 180;
   if (angle1 > 360) angle1 = 360;
@@ -181,6 +203,7 @@ function draw() {
   if (power2 < 1) power2 = 1;
 
   // reset stick pos
+  // Following the tank position
   stick1.position.x = tank1.position.x
   stick1.position.y = tank1.position.y - 3
   stick1.rotation = angle1
@@ -188,7 +211,7 @@ function draw() {
   stick2.position.y = tank2.position.y - 3
   stick2.rotation = angle2
 
-  // Fire keydown
+  // Fire!!!
   if (kb.presses(' ')) {
     if (fire) { return; }
 
@@ -222,6 +245,7 @@ function draw() {
     }
   }
 
+  // Show Player Information
   showPlayerInfo()
 
   if (bomb != null) {
@@ -262,13 +286,18 @@ function draw() {
   }
 }
 
-// Functions
+///////////////
+// Functions //
+///////////////
+
+// show player info
 function showPlayerInfo() {
   document.getElementById('player1').innerHTML = 'Player1 - Power: ' + power1 + '&emsp;Angle: ' + (angle1 - 180 <= 90 ? angle1 - 180 : 360 - angle1);
   document.getElementById('player2').innerHTML = 'Player2 - Power: ' + power2 + '&emsp;Angle: ' + (angle2 - 180 <= 90 ? angle2 - 180 : 360 - angle2);
   document.getElementById('turn').innerHTML = 'Turn: Player' + (turn + 1);
 }
 
+// Generate Polygon region
 function createArea() {
   context = areaImage.canvas.getContext('2d');
   board = [];
@@ -308,6 +337,7 @@ function createArea() {
   areaBg.layer = 1;
 }
 
+// When the bomb explodes, subtract bomb region from the background
 function subtractExplodedRegion() {
   area.remove();
 
